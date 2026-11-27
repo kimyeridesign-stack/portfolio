@@ -562,19 +562,11 @@ h1, h2, h3 { margin: 0; font-weight: inherit; }
   .pj-sec + .pj-sec { margin-top: 80px; }
   .page-title { font-size: min(165px, 24vw); flex-wrap: wrap; }
   .pj__title { font-size: min(71px, 11.5vw); }
-  /* 미디어: 세로 이미지 줄은 옆으로 넘겨 보기, 캐러셀 줄은 한 줄에 하나 */
-  .grid--strip {
-    display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory;
-    margin: 0 -16px; padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  }
-  .grid--strip::-webkit-scrollbar { display: none; }
-  .grid--strip > * { flex: 0 0 auto; height: min(420px, 95vw); width: auto; scroll-snap-align: start; scroll-margin-left: 16px; border-radius: 12px; }
-  .grid--stack { grid-template-columns: 1fr; gap: 12px; }
+  /* 미디어: 모바일에선 한 화면에 하나씩, 폰 폭 꽉 차게 세로로 */
+  .grid--media { grid-template-columns: 1fr; gap: 12px; }
   .media, .scrollbox, .carousel { border-radius: 12px; }
-  .full--pan { margin: 0 -16px; }
-  .full__pan { overflow-x: auto; padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  .full__pan::-webkit-scrollbar { display: none; }
-  .full__pan img { width: 780px; max-width: none; }
+  .full__cols { display: grid; gap: 12px; }
+  .full__cols img { width: 100%; height: auto; border-radius: 12px; }
   .pj-sec__desc { font-size: 15px; line-height: 1.65; letter-spacing: -0.02em; }
   .pj-sec__media { margin-top: 24px; gap: 12px; }
   .section-h { font-size: 20px; }
@@ -586,4 +578,5 @@ h1, h2, h3 { margin: 0; font-weight: inherit; }
   .display { margin-top: 32px; }
   .mobile-next { display: flex; justify-content: flex-start; padding: 0 16px 48px; }
 }
-@media (min-width: 761px) { .mobile-next { display: none; } }
+@media (min-width: 761px) { .mobile-next { display: none; } .only-m { display: none; } }
+@media (max-width: 760px) { .only-d { display: none; } }

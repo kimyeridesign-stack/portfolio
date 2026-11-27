@@ -112,7 +112,12 @@
     var block = function (bl) {
       if (bl.img) {
         var e = firstImg; firstImg = false;
-        return '<figure class="full' + (bl.pan ? " full--pan" : "") + ' reveal">' + (bl.pan ? '<div class="full__pan" tabindex="0">' : "") + pic(bl.img, bl.w, bl.h, alt, e) + (bl.pan ? "</div>" : "") + "</figure>";
+        // 여러 단으로 붙은 긴 이미지는 모바일에서 단별로 세로로 이어 보여준다
+        if (bl.m) {
+          return '<figure class="full reveal"><div class="only-d">' + pic(bl.img, bl.w, bl.h, alt, e) + '</div><div class="only-m full__cols">' +
+            bl.m.map(function (c) { return pic(c[0], c[1], c[2], alt); }).join("") + "</div></figure>";
+        }
+        return '<figure class="full reveal">' + pic(bl.img, bl.w, bl.h, alt, e) + "</figure>";
       }
       if (bl.sub) return '<h3 class="section-h section-h--sub reveal">' + esc(bl.sub) + "</h3>";
       if (bl.display) return '<p class="display reveal">' + esc(bl.display) + "</p>";
