@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
+<title>Sketch</title>
+<style>
+:root { --ink:#141414; --mint:#4ff2a0; --bg1:#eef0ea; --bg2:#dfe3da; --head:#141414; --ghost:rgba(20,20,20,.06); }
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { background: radial-gradient(120% 90% at 50% 40%, var(--bg1), var(--bg2)); color: var(--ink); font-family: "IBM Plex Sans KR", sans-serif; word-break: keep-all; -webkit-font-smoothing: antialiased; }
+canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 2; }
+.top { position: fixed; z-index: 5; inset: 0 0 auto 0; display: flex; justify-content: space-between; padding: 28px 40px 0; font: 500 15px/1.2 Inter, sans-serif; }
+.top nav { display: flex; gap: 36px; }
+.top nav a.on { background: linear-gradient(var(--mint),var(--mint)) 0 90%/100% .45em no-repeat; }
+.head { position: fixed; z-index: 1; left: 0; right: 0; top: 26px; text-align: center; font: 400 clamp(64px, 9.6vw, 168px)/.84 "Instrument Serif", serif; letter-spacing: -0.015em; color: var(--head); text-transform: uppercase; }
+.ghost { position: fixed; z-index: 0; left: 0; right: 0; top: 50%; transform: translateY(-46%); text-align: center; font: 400 clamp(160px, 30vw, 520px)/1 "Instrument Serif", serif; color: var(--ghost); white-space: nowrap; letter-spacing: -0.02em; }
+.foot { position: fixed; z-index: 4; left: 40px; right: 40px; bottom: 34px; border-top: 1px solid rgba(20,20,20,.28); padding-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.foot .l b { display: block; font-size: 22px; line-height: 1.35; font-weight: 700; letter-spacing: -0.02em; }
+.foot .r { font-size: 15px; line-height: 1.7; color: rgba(20,20,20,.75); white-space: normal; justify-self: end; max-width: 560px; }
+.pill { display: inline-flex; align-items: center; gap: 4px; margin-top: 22px; font: 500 18px Inter, sans-serif; }
+.pill span { background: var(--ink); color: var(--mint); border-radius: 999px; padding: 9px 18px; }
+.pill i { background: var(--ink); color: var(--mint); border-radius: 50%; width: 40px; height: 40px; display: grid; place-items: center; font-style: normal; }
+.info { display: grid; grid-template-columns: auto 1fr; gap: 4px 18px; font-size: 13px; margin-top: 14px; color: rgba(20,20,20,.7); }
+.info dt { font: 600 11px/1.9 Inter, sans-serif; letter-spacing: .08em; color: rgba(20,20,20,.45); }
+.list { list-style: none; padding: 0; font: 400 16px/1.8 Inter, sans-serif; text-align: right; color: rgba(20,20,20,.35); }
+.list .on { color: var(--ink); background: linear-gradient(var(--mint),var(--mint)) 0 88%/100% .42em no-repeat; }
+.m .top { padding: 18px 18px 0; font-size: 13px; }
+.m .top nav { gap: 16px; }
+.m .head { top: 62px; font-size: 64px; line-height: .86; }
+.m .foot { left: 18px; right: 18px; bottom: 22px; grid-template-columns: 1fr; gap: 10px; padding-top: 14px; }
+.m .foot .l b { font-size: 18px; }
+.m .foot .r { font-size: 13px; justify-self: start; white-space: normal; }
+.m .pill { margin-top: 12px; font-size: 15px; } .m .pill i { width: 34px; height: 34px; } .m .pill span { padding: 8px 14px; }
+.m .list { display: none; }
+.m .ghost { font-size: 200px; }
+</style>
+</head>
+<body>
+<canvas></canvas>
+<div class="ghost" id="ghost"></div>
+<header class="top"><span>Kim Yeri</span><nav id="nav"><a>Works</a><a>About</a><a>Contact</a></nav></header>
+<h1 class="head" id="head"></h1>
+<footer class="foot" id="foot"></footer>
+<script src="../assets/js/data.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }</script>
+<script type="module" src="sketch.js"></script>
+</body>
+</html>

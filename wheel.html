@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Inter:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="assets/css/style.css?v=2">
-<link rel="stylesheet" href="assets/css/wheel.css?v=1">
+<link rel="stylesheet" href="assets/css/wheel.css?v=2">
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js">
 <title>Kim Yeri — Works</title>
 <meta name="description" content="디지털·브랜드 디자이너 김예리 포트폴리오">
@@ -25,18 +25,23 @@
   </nav>
 </header>
 
-<ol class="wh-list" data-list></ol>
+<h1 class="wh-title" data-title aria-live="polite"></h1>
 
-<section class="wh-now" aria-live="polite">
-  <div class="wh-title" data-title></div>
-  <div class="wh-meta"><span data-kor></span><span data-cat></span></div>
-  <a class="pill wh-cta" data-cta href="#"><span class="pill__label">View Project</span><span class="pill__arrow" aria-hidden="true">↗</span></a>
-</section>
+<footer class="wh-foot">
+  <div class="wh-foot__l">
+    <p class="wh-kor" data-kor></p>
+    <p class="wh-sum" data-sum></p>
+  </div>
+  <div class="wh-foot__r">
+    <ol class="wh-list" data-list></ol>
+    <a class="pill wh-cta" data-cta href="#"><span class="pill__label">View Project</span><span class="pill__arrow" aria-hidden="true">↗</span></a>
+  </div>
+</footer>
 
 <div class="wh-veil" data-veil></div>
 
 <script src="assets/js/data.js?v=2"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }</script>
-<script type="module" src="assets/js/wheel.js?v=1"></script>
+<script type="module" src="assets/js/wheel.js?v=2"></script>
 </body>
 </html>

@@ -1,50 +1,43 @@
-/* 첫 화면 3D 이미지 휠: 스크롤·드래그로 돌고, 앞에 온 작업의 제목이 바뀌고, 누르면 작업으로 들어간다. */
+/* 첫 화면: 작업 카드가 원형 링으로 돈다 (grail 구조).
+   가운데 줄 12장 = 프로젝트당 2장, 앞에 온 카드의 작업 제목이 위에 크게 바뀌고, 누르면 그 작업으로 들어간다.
+   위·아래 줄은 같은 작업들의 다른 컷이 다른 속도로 돌아 공간감을 만든다. */
 import * as THREE from "three";
 
-const P = (window.PROJECTS || []).filter((p) => p.slug !== "kt-diary");
+const P = window.PROJECTS || [];
 const bySlug = Object.fromEntries(P.map((p, i) => [p.slug, i]));
 
-/* 패널: 프로젝트마다 2장. a = 가로/세로 비율, x = 좌우 어긋남 */
-const PANELS = [
-  { src: "01", slug: "social-content", a: 1.0, x: -0.18 },
-  { src: "02", slug: "social-content", a: 0.75, x: 0.22 },
-  { src: "03", slug: "detail-pages", a: 0.75, x: -0.1 },
-  { src: "04", slug: "detail-pages", a: 0.75, x: 0.3 },
-  { src: "05", slug: "cheremimaka", a: 1.31, x: -0.12 },
-  { src: "06", slug: "cheremimaka", a: 1.53, x: 0.16 },
-  { src: "07", slug: "kt-jinro", a: 1.32, x: -0.22 },
-  { src: "08", slug: "kt-jinro", a: 1.0, x: 0.12 },
-  { src: "09", slug: "welcome-kit", a: 1.78, x: -0.05 },
-  { src: "10", slug: "welcome-kit", a: 1.46, x: 0.24 },
-  { src: "11", slug: "event-poster", a: 0.72, x: -0.2 },
-  { src: "12", slug: "event-poster", a: 0.74, x: 0.18 },
+/* 가운데 줄: 프로젝트당 2장 */
+const MID = [
+  ["01", "social-content"], ["02", "social-content"],
+  ["03", "detail-pages"], ["04", "detail-pages"],
+  ["05", "cheremimaka"], ["06", "cheremimaka"],
+  ["07", "kt-jinro"], ["08", "kt-jinro"],
+  ["09", "welcome-kit"], ["10", "welcome-kit"],
+  ["11", "event-poster"], ["12", "event-poster"],
 ];
+/* 위·아래 줄: 추가 컷 */
+const TOP = [["e01", "social-content"], ["e05", "detail-pages"], ["e06", "cheremimaka"], ["e08", "kt-jinro"], ["e09", "welcome-kit"], ["e11", "event-poster"]];
+const BOT = [["e02", "social-content"], ["e03", "social-content"], ["e07", "cheremimaka"], ["e10", "welcome-kit"], ["e12", "event-poster"], ["e04", "social-content"]];
 
-const N = PANELS.length;
-const H = 1; // 패널 높이
-const GAP = 0.16;
+const N = MID.length;
 const STEP = (Math.PI * 2) / N;
-const R = (N * (H + GAP)) / (Math.PI * 2);
-const BG = new THREE.Color("#e7e7e4");
+const CW = 0.9, CH = 1.2; // 카드 크기 (3:4)
+const R = 2.6; // 링 반지름
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ───── 렌더러 ───── */
+/* ───── 렌더러 (배경 투명: 뒤의 큰 제목이 카드 사이로 보이게) ───── */
 const canvas = document.querySelector(".wh-canvas");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setClearColor(BG, 1);
+renderer.setClearColor(0x000000, 0);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
-const tilt = new THREE.Group(); // 원통 전체 기울기(비스듬히 보이게)
-const skew = new THREE.Group(); // 속도에 따른 비틀림
-const wheel = new THREE.Group(); // 실제로 도는 원통
-tilt.add(skew);
-skew.add(wheel);
-scene.add(tilt);
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+const world = new THREE.Group(); // 전체 기울기 + 속도 흔들림
+scene.add(world);
 
-/* 패널 셰이더: 원통 뒤로 갈수록 배경색으로 흐려짐, 로딩 페이드, 호버 밝기 */
+/* 카드 셰이더: 둥근 모서리, 이미지 cover 크롭, 뒷면은 무지 카드, 링 뒤쪽은 옅게 */
 const vert = /* glsl */ `
   varying vec2 vUv;
   varying float vDepth;
@@ -59,96 +52,110 @@ const frag = /* glsl */ `
   varying vec2 vUv;
   varying float vDepth;
   uniform sampler2D uTex;
-  uniform vec3 uBg;
+  uniform float uImgA;
+  uniform float uCardA;
   uniform float uLoad;
   uniform float uFocus;
+  uniform float uFar;
+  uniform vec3 uBack;
+  float rbox(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
   void main() {
-    vec3 c = texture2D(uTex, vUv).rgb;
-    float fade = smoothstep(-0.35, 0.95, vDepth);
-    float k = mix(0.18, 1.0, fade) * uLoad;
-    c = mix(c, c * 0.86 + 0.02, 1.0 - uFocus);
-    gl_FragColor = vec4(mix(uBg, c, k), 1.0);
+    vec2 p = (vUv - 0.5) * vec2(uCardA, 1.0);
+    float d = rbox(p, vec2(uCardA * 0.5, 0.5), 0.035);
+    float aa = fwidth(d);
+    float alpha = 1.0 - smoothstep(-aa, aa, d);
+    if (alpha < 0.01) discard;
+
+    vec2 uv = vUv - 0.5;
+    if (uImgA > uCardA) uv.x *= uCardA / uImgA; else uv.y *= uImgA / uCardA;
+    uv += 0.5;
+    if (!gl_FrontFacing) uv.x = 1.0 - uv.x;
+    vec3 img = texture2D(uTex, uv).rgb;
+    vec3 c = gl_FrontFacing ? img : mix(uBack, img, 0.12);
+    c = mix(uBack, c, uLoad);
+    c = mix(c * 0.9 + 0.035, c, uFocus);
+
+    float near = smoothstep(-1.05, 0.55, vDepth);
+    float a = alpha * mix(uFar, 1.0, near);
+    gl_FragColor = vec4(c, a);
     #include <colorspace_fragment>
   }`;
 
-/* 원통 곡면을 따라 휘어진 판 */
-function bentPlane(w, h, a0) {
-  const g = new THREE.PlaneGeometry(w, h, 1, 24);
-  const p = g.attributes.position;
-  for (let i = 0; i < p.count; i++) {
-    const y = p.getY(i);
-    const ang = a0 + y / R;
-    p.setXYZ(i, p.getX(i), R * Math.sin(ang), R * Math.cos(ang));
-  }
-  g.computeBoundingSphere();
+const loader = new THREE.TextureLoader();
+const BACK = new THREE.Color("#d8d8d3");
+const geo = new THREE.PlaneGeometry(CW, CH);
+const cards = [];
+const tiers = [];
+
+function makeTier(list, { radius, y, scale, offset, speed, jitter, far }) {
+  const g = new THREE.Group();
+  g.position.y = y;
+  world.add(g);
+  const n = list.length;
+  list.forEach(([src, slug], i) => {
+    const mat = new THREE.ShaderMaterial({
+      vertexShader: vert,
+      fragmentShader: frag,
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: true,
+      uniforms: {
+        uTex: { value: null }, uImgA: { value: 1 }, uCardA: { value: CW / CH },
+        uLoad: { value: 0 }, uFocus: { value: 0 }, uFar: { value: far }, uBack: { value: BACK }, uR: { value: R },
+      },
+    });
+    mat.extensions = { derivatives: true };
+    const m = new THREE.Mesh(geo, mat);
+    const a = offset + (i / n) * Math.PI * 2;
+    const yj = jitter ? Math.sin(i * 2.3 + offset * 5) * jitter : 0;
+    m.position.set(Math.sin(a) * radius, yj, Math.cos(a) * radius);
+    m.rotation.set(0, a, 0);
+    m.rotateZ(jitter ? Math.sin(i * 1.7) * 0.07 : 0);
+    m.scale.setScalar(scale);
+    m.userData = { slug, mid: list === MID ? i : -1, load: 0, focus: 0, ready: false };
+    g.add(m);
+    cards.push(m);
+    loader.load(`assets/img/wheel/${src}.webp`, (t) => {
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      mat.uniforms.uTex.value = t;
+      mat.uniforms.uImgA.value = t.image.width / t.image.height;
+      m.userData.ready = true;
+    });
+  });
+  tiers.push({ g, speed });
   return g;
 }
 
-const loader = new THREE.TextureLoader();
-const meshes = PANELS.map((d, i) => {
-  const w = H * d.a;
-  const mat = new THREE.ShaderMaterial({
-    vertexShader: vert,
-    fragmentShader: frag,
-    uniforms: {
-      uTex: { value: null },
-      uBg: { value: BG },
-      uR: { value: R },
-      uLoad: { value: 0 },
-      uFocus: { value: 0 },
-    },
-  });
-  const m = new THREE.Mesh(bentPlane(w, H, -i * STEP), mat);
-  m.position.x = d.x;
-  m.userData = { i, slug: d.slug, load: 0, focus: 0 };
-  wheel.add(m);
-  loader.load(`assets/img/wheel/${d.src}.webp`, (t) => {
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    mat.uniforms.uTex.value = t;
-    m.userData.ready = true;
-  });
-  return m;
-});
+makeTier(MID, { radius: R, y: 0, scale: 1, offset: 0, speed: 1, jitter: 0, far: 0.32 });
+makeTier(TOP, { radius: R * 0.84, y: 1.42, scale: 0.62, offset: STEP * 1.3, speed: 0.72, jitter: 0.12, far: 0.22 });
+makeTier(BOT, { radius: R * 0.9, y: -1.38, scale: 0.6, offset: STEP * 0.6, speed: 1.3, jitter: 0.12, far: 0.22 });
 
 /* ───── 레이아웃 ───── */
 let mobile = false;
-let camDist = 5;
+let camDist = 6, camY = 0.9, lookY = 0;
 function layout() {
   const w = innerWidth, h = innerHeight;
   mobile = w <= 760;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
-  // 원통을 비스듬히 돌려도 맨 앞 패널이 원하는 x에 오도록 보정
-  const place = (fx, fy, ry, rz) => {
-    tilt.rotation.set(0, ry, rz);
-    tilt.position.set(fx - R * Math.sin(ry), fy, -R * (1 - Math.cos(ry)) * 0);
-  };
   if (mobile) {
-    camera.fov = 34;
-    camDist = 6.6;
-    place(0.06, 0.3, -0.26, 0.05);
+    camera.fov = 36; camDist = 7.4; camY = 0.75; lookY = -0.05;
   } else {
-    camera.fov = 28;
-    camDist = 4.5;
-    const visW = 2 * camDist * Math.tan((14 * Math.PI) / 180) * (w / h);
-    place(-0.09 * visW, 0.02, -0.42, 0.06);
+    camera.fov = 30; camDist = 6.2; camY = 0.95; lookY = 0.12;
   }
-  camera.position.set(0, 0, R + camDist);
-  camera.lookAt(0, 0, 0);
   camera.updateProjectionMatrix();
 }
 addEventListener("resize", layout);
 layout();
+world.rotation.z = 0.035;
 
-/* ───── 회전 상태 (무게감: 목표값을 천천히 따라감) ───── */
-let target = 0, cur = 0, vel = 0;
-let idleT = 0;
+/* ───── 회전 상태 ───── */
+let target = 0, cur = 0, vel = 0, idleT = 0;
 const wrap = (v) => ((v % N) + N) % N;
 const indexAt = (rot) => wrap(Math.round(rot / STEP));
-function snapSoon() { clearTimeout(idleT); idleT = setTimeout(() => { target = Math.round(target / STEP) * STEP; }, 160); }
-
-function goToPanel(i) {
+function snapSoon() { clearTimeout(idleT); idleT = setTimeout(() => { target = Math.round(target / STEP) * STEP; }, 170); }
+function goTo(i) {
   const now = Math.round(target / STEP);
   let d = wrap(i - wrap(now));
   if (d > N / 2) d -= N;
@@ -157,78 +164,84 @@ function goToPanel(i) {
 
 addEventListener("wheel", (e) => {
   e.preventDefault();
-  const d = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY;
-  target += Math.max(-120, Math.min(120, d)) * 0.0016;
+  let d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if (e.deltaMode === 1) d *= 32;
+  target += Math.max(-120, Math.min(120, d)) * 0.0014;
   snapSoon();
 }, { passive: false });
 
 addEventListener("keydown", (e) => {
-  if (e.key === "ArrowDown" || e.key === "PageDown") { goToPanel(indexAt(target) + 1); e.preventDefault(); }
-  if (e.key === "ArrowUp" || e.key === "PageUp") { goToPanel(indexAt(target) - 1); e.preventDefault(); }
-  if (e.key === "Enter" && document.activeElement === document.body) enter(PANELS[indexAt(cur)].slug);
+  if (["ArrowRight", "ArrowDown"].includes(e.key)) { goTo(indexAt(target) + 1); e.preventDefault(); }
+  if (["ArrowLeft", "ArrowUp"].includes(e.key)) { goTo(indexAt(target) - 1); e.preventDefault(); }
+  if (e.key === "Enter" && document.activeElement === document.body) enter(MID[indexAt(cur)][1]);
 });
 
-/* 드래그 / 터치 */
+/* 드래그: 좌우(모바일은 상하도) */
 let drag = null;
+const pointer = new THREE.Vector2(9, 9);
 canvas.addEventListener("pointerdown", (e) => {
-  drag = { y: e.clientY, x: e.clientX, t0: target, moved: 0, last: e.clientY, lt: performance.now(), v: 0 };
+  drag = { x: e.clientX, y: e.clientY, t0: target, moved: 0, last: e.clientX, lt: performance.now(), v: 0 };
   canvas.setPointerCapture(e.pointerId);
 });
 canvas.addEventListener("pointermove", (e) => {
   pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   if (!drag) return;
-  const dy = e.clientY - drag.y;
-  drag.moved = Math.max(drag.moved, Math.abs(dy), Math.abs(e.clientX - drag.x));
-  const k = 3.2 / innerHeight;
-  target = drag.t0 - dy * k;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  drag.moved = Math.max(drag.moved, Math.abs(dx), Math.abs(dy));
+  const use = Math.abs(dx) >= Math.abs(dy) ? dx : dy * 0.8;
+  target = drag.t0 - use * (Math.PI * 1.1) / innerWidth;
   const now = performance.now();
-  drag.v = (e.clientY - drag.last) / Math.max(1, now - drag.lt);
-  drag.last = e.clientY; drag.lt = now;
+  drag.v = (e.clientX - drag.last) / Math.max(1, now - drag.lt);
+  drag.last = e.clientX; drag.lt = now;
   if (drag.moved > 6) canvas.classList.add("is-drag");
 });
 function endDrag(e) {
   if (!drag) return;
-  const wasClick = drag.moved < 6;
-  target -= drag.v * 0.45; // 손을 놓으면 관성으로 더 돎
+  const click = drag.moved < 6;
+  target -= drag.v * 0.5;
   target = Math.round(target / STEP) * STEP;
   canvas.classList.remove("is-drag");
   drag = null;
-  if (wasClick && e.type === "pointerup") pick(e);
+  if (click && e.type === "pointerup") pick(e);
 }
 canvas.addEventListener("pointerup", endDrag);
 canvas.addEventListener("pointercancel", endDrag);
 
-/* 클릭: 앞 패널이면 진입, 아니면 그 패널로 돌림 */
 const ray = new THREE.Raycaster();
-const pointer = new THREE.Vector2(9, 9);
 function hit(px, py) {
   ray.setFromCamera(new THREE.Vector2(px, py), camera);
-  const h = ray.intersectObjects(meshes, false)[0];
-  return h ? h.object : null;
+  for (const h of ray.intersectObjects(cards, false)) {
+    // 카드 앞면이 카메라를 향할 때만 (뒷면은 통과)
+    const n = new THREE.Vector3(0, 0, 1).applyQuaternion(h.object.getWorldQuaternion(new THREE.Quaternion()));
+    if (n.dot(ray.ray.direction) < 0) return h.object;
+  }
+  return null;
 }
 function pick(e) {
   const m = hit((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   if (!m) return;
-  if (m.userData.i === indexAt(cur) && Math.abs(target - cur) < 0.05) enter(m.userData.slug);
-  else goToPanel(m.userData.i);
+  const { slug, mid } = m.userData;
+  const activeSlug = MID[indexAt(cur)][1];
+  if (mid === indexAt(cur) && Math.abs(target - cur) < 0.05) return enter(slug);
+  if (mid >= 0) return goTo(mid);
+  if (slug === activeSlug) return enter(slug);
+  goTo(MID.findIndex((d) => d[1] === slug));
 }
 
-/* ───── UI: 리스트, 큰 제목 ───── */
-const list = document.querySelector("[data-list]");
+/* ───── 화면 글자 ───── */
 const titleEl = document.querySelector("[data-title]");
 const korEl = document.querySelector("[data-kor]");
-const catEl = document.querySelector("[data-cat]");
+const sumEl = document.querySelector("[data-sum]");
+const foot = document.querySelector(".wh-foot");
+const list = document.querySelector("[data-list]");
 const cta = document.querySelector("[data-cta]");
 const veil = document.querySelector("[data-veil]");
 
-list.innerHTML = P.map((p) =>
-  `<li data-slug="${p.slug}"><button type="button"><span>${p.row.title}</span></button></li>`
-).join("");
+list.innerHTML = P.map((p) => `<li data-slug="${p.slug}"><button type="button">${p.row.title}</button></li>`).join("");
 list.querySelectorAll("li").forEach((li) => {
   li.querySelector("button").addEventListener("click", () => {
-    const first = PANELS.findIndex((d) => d.slug === li.dataset.slug);
-    if (PANELS[indexAt(target)].slug === li.dataset.slug) enter(li.dataset.slug);
-    else goToPanel(first);
+    if (MID[indexAt(target)][1] === li.dataset.slug) enter(li.dataset.slug);
+    else goTo(MID.findIndex((d) => d[1] === li.dataset.slug));
   });
 });
 
@@ -242,74 +255,80 @@ function show(slug) {
   cta.href = `work.html?p=${slug}`;
   const put = () => {
     titleEl.innerHTML = p.title.split("\n").map((l) => `<span class="ln"><span>${l}</span></span>`).join("");
+    titleEl.setAttribute("aria-label", p.title.replace("\n", " "));
     korEl.textContent = p.kor;
-    catEl.textContent = p.row.period;
-    requestAnimationFrame(() => titleEl.classList.remove("is-out"));
+    sumEl.textContent = p.summary || "";
+    requestAnimationFrame(() => { titleEl.classList.remove("is-out"); foot.classList.remove("is-out"); });
   };
   clearTimeout(swapT);
-  if (first || reduce) { put(); return; }
+  if (first || reduce) return put();
   titleEl.classList.add("is-out");
-  swapT = setTimeout(put, 280);
+  foot.classList.add("is-out");
+  swapT = setTimeout(put, 260);
 }
 
-cta.addEventListener("click", (e) => { e.preventDefault(); enter(PANELS[indexAt(cur)].slug); });
+cta.addEventListener("click", (e) => { e.preventDefault(); enter(MID[indexAt(cur)][1]); });
 
+const zoom = { v: 0, to: 0 };
 let leaving = false;
 function enter(slug) {
   if (leaving) return;
   leaving = true;
   zoom.to = 1;
-  setTimeout(() => veil.classList.remove("is-gone"), 260);
+  setTimeout(() => veil.classList.remove("is-gone"), 280);
   setTimeout(() => { location.href = `work.html?p=${slug}`; }, 900);
 }
 addEventListener("pageshow", (e) => { if (e.persisted) { leaving = false; zoom.to = 0; zoom.v = 0; veil.classList.add("is-gone"); } });
 
 /* ───── 루프 ───── */
-const zoom = { v: 0, to: 0 };
 let last = performance.now();
 let intro = reduce ? 1 : 0;
+const hoverable = !matchMedia("(hover: none)").matches;
 
 function tick(now) {
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
 
-  // 첫 진입: 원통이 한 바퀴 남짓 감기며 멈춤
+  const prev = cur;
   if (intro < 1) {
-    intro = Math.min(1, intro + dt / 1.8);
+    // 첫 진입: 링이 반 바퀴 넘게 감기며 들어옴
+    intro = Math.min(1, intro + dt / 2);
     const e = 1 - Math.pow(1 - intro, 4);
-    cur = target + (1 - e) * -Math.PI * 0.9;
+    cur = target - (1 - e) * Math.PI * 1.25;
   } else {
-    const k = 1 - Math.pow(0.0015, dt); // 프레임과 무관한 부드러운 추종
-    const prev = cur;
-    cur += (target - cur) * k;
-    vel = (cur - prev) / Math.max(dt, 1e-3);
+    cur += (target - cur) * (1 - Math.pow(0.002, dt)); // 무겁게 따라감
   }
-  wheel.rotation.x = -cur;
+  vel = (cur - prev) / Math.max(dt, 1e-3);
 
-  // 속도에 따라 살짝 비틀림(묵직한 관성)
-  const sk = Math.max(-0.12, Math.min(0.12, vel * 0.02));
-  skew.rotation.z += (sk - skew.rotation.z) * 0.12;
+  for (const t of tiers) t.g.rotation.y = -cur * t.speed;
+  // 빨리 돌수록 링이 살짝 눕고 가라앉음
+  const lean = Math.max(-0.16, Math.min(0.16, vel * 0.03));
+  world.rotation.x += (Math.abs(lean) * 0.6 - world.rotation.x) * 0.1;
+  world.rotation.z += (0.035 - lean * 0.25 - world.rotation.z) * 0.1;
 
-  // 진입 줌
   zoom.v += (zoom.to - zoom.v) * (1 - Math.pow(0.002, dt));
-  camera.position.z = R + camDist - zoom.v * camDist * 0.62;
-  camera.updateMatrixWorld();
+  const dist = camDist * (1 - zoom.v * 0.5);
+  camera.position.set(0, camY * (1 - zoom.v * 0.8), R + dist);
+  camera.lookAt(0, lookY * (1 - zoom.v), 0);
 
   const active = indexAt(cur);
-  show(PANELS[active].slug);
+  const activeSlug = MID[active][1];
+  show(activeSlug);
 
-  // 호버
-  let hov = null;
-  if (!drag && !matchMedia("(hover: none)").matches) hov = hit(pointer.x, pointer.y);
+  const hov = !drag && hoverable ? hit(pointer.x, pointer.y) : null;
   canvas.classList.toggle("is-hover", !!hov);
 
-  for (const m of meshes) {
+  for (const m of cards) {
     const u = m.material.uniforms, d = m.userData;
     if (d.ready) d.load = Math.min(1, d.load + dt * 1.6);
-    const on = PANELS[m.userData.i].slug === PANELS[active].slug || m === hov ? 1 : 0;
+    const on = d.slug === activeSlug || m === hov ? 1 : 0;
     d.focus += (on - d.focus) * 0.08;
     u.uLoad.value = d.load * d.load * (3 - 2 * d.load);
     u.uFocus.value = d.focus;
+    // 앞 카드는 살짝 앞으로 나옴
+    const lift = d.mid === active ? 1 : 0;
+    m.userData.lift = (m.userData.lift || 0) + (lift - (m.userData.lift || 0)) * 0.08;
+    m.scale.setScalar((d.mid >= 0 ? 1 : 0.61) * (1 + m.userData.lift * 0.08));
   }
 
   renderer.render(scene, camera);
