@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e7e7e4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Inter:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
+<link rel="stylesheet" href="assets/css/wheel.css?v=1">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js">
+<title>Kim Yeri — Works</title>
+<meta name="description" content="디지털·브랜드 디자이너 김예리 포트폴리오">
+</head>
+<body data-page="wheel" class="wheel-page">
+<canvas class="wh-canvas" aria-hidden="true"></canvas>
+
+<header class="wh-top">
+  <a class="wh-id" href="index.html"><b>Kim Yeri</b><span>Digital &amp; Brand Designer</span></a>
+  <nav class="wh-nav" aria-label="주요 메뉴">
+    <a href="works.html">Works</a>
+    <a href="about.html">About</a>
+    <a href="mailto:kimyeri.design@gmail.com">Contact</a>
+  </nav>
+</header>
+
+<ol class="wh-list" data-list></ol>
+
+<section class="wh-now" aria-live="polite">
+  <div class="wh-title" data-title></div>
+  <div class="wh-meta"><span data-kor></span><span data-cat></span></div>
+  <a class="pill wh-cta" data-cta href="#"><span class="pill__label">View Project</span><span class="pill__arrow" aria-hidden="true">↗</span></a>
+</section>
+
+<div class="wh-veil" data-veil></div>
+
+<script src="assets/js/data.js?v=2"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }</script>
+<script type="module" src="assets/js/wheel.js?v=1"></script>
+</body>
+</html>
