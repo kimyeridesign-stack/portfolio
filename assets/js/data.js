@@ -82,9 +82,9 @@ window.PROJECTS = [
     ],
     summary: "각 제품과 기획전의 USP를 한눈에 읽히는 상세 이미지로 풀어,\n핵심 정보가 빠르게 전달되도록 디자인했습니다.\n기획에서 전달받은 제품·브랜드의 핵심 강점을 바탕으로,\n디자이너의 시선에서 먼저 제안하고 디벨롭하는\n기획형 디자이너입니다.",
     sections: [
-      { h: "CETAPHIL", desc: "세타필 세라마이드 로션 신제품 출시에 맞춰, 건조 피부 고민에서 트리플 배리어 성분, 수분량 증가 수치까지\n제품의 핵심 포인트가 차례로 읽히도록 설계했습니다.", blocks: [{ img: "detail-pages/cetaphil", w: 1800, h: 3124 }] },
-      { h: "DOLCE GUSTO", desc: "네스카페 돌체구스토 네오의 스타벅스 카페 퀄리티, 앱 커넥티비티, 3가지 커피 등 제품의 USP를\n포인트 별로 나눠 한눈에 읽히는 상세 이미지로 구성했습니다.", blocks: [{ img: "detail-pages/dolcegusto", w: 1800, h: 2608 }] },
-      { h: "BRAUN × MONAMI", desc: "브라운과 모나미의 콜라보 패키지 출시를 알리는 상세 이미지로, 제품 이미지와 핵심 메시지를\n또렷하게 강조해 콜라보의 특별함이 전달되도록 디자인했습니다.", blocks: [{ img: "detail-pages/braun", w: 1800, h: 2303 }] }
+      { h: "CETAPHIL", desc: "세타필 세라마이드 로션 신제품 출시에 맞춰, 건조 피부 고민에서 트리플 배리어 성분, 수분량 증가 수치까지\n제품의 핵심 포인트가 차례로 읽히도록 설계했습니다.", blocks: [{ img: "detail-pages/cetaphil", w: 1800, h: 3124, pan: true }] },
+      { h: "DOLCE GUSTO", desc: "네스카페 돌체구스토 네오의 스타벅스 카페 퀄리티, 앱 커넥티비티, 3가지 커피 등 제품의 USP를\n포인트 별로 나눠 한눈에 읽히는 상세 이미지로 구성했습니다.", blocks: [{ img: "detail-pages/dolcegusto", w: 1800, h: 2608, pan: true }] },
+      { h: "BRAUN × MONAMI", desc: "브라운과 모나미의 콜라보 패키지 출시를 알리는 상세 이미지로, 제품 이미지와 핵심 메시지를\n또렷하게 강조해 콜라보의 특별함이 전달되도록 디자인했습니다.", blocks: [{ img: "detail-pages/braun", w: 1800, h: 2303, pan: true }] }
     ]
   },
   {
@@ -129,7 +129,7 @@ window.PROJECTS = [
           { img: "cheremimaka/photo-2", w: 1800, h: 543 },
           { img: "cheremimaka/photo-3", w: 1800, h: 543 }
         ] },
-      { h: "PRODUCT PAGE", blocks: [{ img: "cheremimaka/product-page", w: 1800, h: 3797 }] },
+      { h: "PRODUCT PAGE", blocks: [{ img: "cheremimaka/product-page", w: 1800, h: 3797, pan: true }] },
       { h: "WEB DESIGN", desc: "콘텐츠의 영역을 명확히 분리하는 레이아웃으로 브랜드 결에 맞는 웹사이트를 구축했습니다. 웹 기획과 디자인은 물론 신규 브랜드 촬영 기획, 웹에 쓰이는 이미지 제작까지\n맡아 PC와 모바일 웹, 제품 패키지를 하나의 톤으로 이어냈습니다.", blocks: [{ img: "cheremimaka/web", w: 1800, h: 1177 }] }
     ]
   },

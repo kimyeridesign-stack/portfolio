@@ -30,6 +30,8 @@ body {
   font-family: var(--f-kr);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -504,7 +506,7 @@ h1, h2, h3 { margin: 0; font-weight: inherit; }
     font-family: var(--f-en); font-weight: 500; font-size: 10px; letter-spacing: .05em;
   }
   .cover-m__word {
-    font-family: var(--f-en); font-size: 25vw; line-height: .95; letter-spacing: -0.035em;
+    font-family: var(--f-en); font-size: 21.5vw; line-height: .95; letter-spacing: -0.035em;
     margin: 28px 12px 0;
   }
   .cover-m__word span { background: var(--mint); box-decoration-break: clone; -webkit-box-decoration-break: clone; display: inline-block; padding-right: 4px; }
@@ -560,8 +562,22 @@ h1, h2, h3 { margin: 0; font-weight: inherit; }
   .pj-sec + .pj-sec { margin-top: 80px; }
   .page-title { font-size: min(165px, 24vw); flex-wrap: wrap; }
   .pj__title { font-size: min(71px, 11.5vw); }
-  .grid--media { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .grid--n2 { grid-template-columns: 1fr; }
+  /* 미디어: 세로 이미지 줄은 옆으로 넘겨 보기, 캐러셀 줄은 한 줄에 하나 */
+  .grid--strip {
+    display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin: 0 -16px; padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .grid--strip::-webkit-scrollbar { display: none; }
+  .grid--strip > * { flex: 0 0 auto; height: min(420px, 95vw); width: auto; scroll-snap-align: start; scroll-margin-left: 16px; border-radius: 12px; }
+  .grid--stack { grid-template-columns: 1fr; gap: 12px; }
+  .media, .scrollbox, .carousel { border-radius: 12px; }
+  .full--pan { margin: 0 -16px; }
+  .full__pan { overflow-x: auto; padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .full__pan::-webkit-scrollbar { display: none; }
+  .full__pan img { width: 780px; max-width: none; }
+  .pj-sec__desc { font-size: 15px; line-height: 1.65; letter-spacing: -0.02em; }
+  .pj-sec__media { margin-top: 24px; gap: 12px; }
+  .section-h { font-size: 20px; }
   .tcols--3, .tcols--2 { grid-template-columns: 1fr; gap: 24px; }
   .brand { grid-template-columns: 1fr; }
   .brand__logos { width: 60%; }

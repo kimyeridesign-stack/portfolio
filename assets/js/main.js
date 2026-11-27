@@ -112,13 +112,13 @@
     var block = function (bl) {
       if (bl.img) {
         var e = firstImg; firstImg = false;
-        return '<figure class="full reveal">' + pic(bl.img, bl.w, bl.h, alt, e) + "</figure>";
+        return '<figure class="full' + (bl.pan ? " full--pan" : "") + ' reveal">' + (bl.pan ? '<div class="full__pan" tabindex="0">' : "") + pic(bl.img, bl.w, bl.h, alt, e) + (bl.pan ? "</div>" : "") + "</figure>";
       }
       if (bl.sub) return '<h3 class="section-h section-h--sub reveal">' + esc(bl.sub) + "</h3>";
       if (bl.display) return '<p class="display reveal">' + esc(bl.display) + "</p>";
       if (bl.items) {
         var cols = typeof bl.cols === "number" ? "repeat(" + bl.cols + ", 1fr)" : bl.cols;
-        return '<div class="grid grid--media grid--n' + bl.items.length + ' reveal" style="--cols:' + cols + '">' + bl.items.map(item).join("") + "</div>";
+        return '<div class="grid grid--media grid--n' + bl.items.length + (bl.items.some(function (x) { return x.slides || x.scroll; }) ? " grid--stack" : " grid--strip") + ' reveal" style="--cols:' + cols + '">' + bl.items.map(item).join("") + "</div>";
       }
       if (bl.cols) {
         return '<div class="tcols tcols--' + bl.cols.length + (bl.label ? " tcols--label" : "") + ' reveal">' + bl.cols.map(function (c) {
