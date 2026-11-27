@@ -1,0 +1,11 @@
+{
+  "image": [615, 1200],
+  "screen": {
+    "left%": 3.209,
+    "top%": 1.293,
+    "width%": 93.582,
+    "height%": 96.445,
+    "corner_radius%_of_screen_width": 13.5
+  },
+  "note": "화면 영역은 완전 투명. 화면 이미지를 아래에 깔고 frame을 위에 얹으면 다이내믹 아일랜드가 화면 위에 올라옴. phone-screen-mask.png는 같은 크기의 화면 모양 마스크(CSS mask-image용)."
+}
