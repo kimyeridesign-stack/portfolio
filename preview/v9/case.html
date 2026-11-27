@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kim Yeri — Case</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root { --u: calc(100vw / 1440); --bg:#ececec; --ink:#111; --mute:rgba(17,17,17,.5); }
+* { box-sizing:border-box; margin:0; padding:0; }
+html { background:var(--bg); }
+body { background:var(--bg); color:var(--ink); font-family:"Pretendard Variable",Pretendard,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+a { color:inherit; text-decoration:none; }
+img, video { display:block; width:100%; height:auto; }
+
+/* header */
+.hd { position:fixed; z-index:20; left:0; right:0; top:0; height:calc(92 * var(--u)); padding:calc(36 * var(--u)) calc(40 * var(--u)) 0; display:flex; align-items:flex-start; background:var(--bg); }
+.hd .logo { font-size:calc(18 * var(--u)); font-weight:500; letter-spacing:-.01em; line-height:1; }
+.hd nav { margin-left:auto; width:calc(680 * var(--u)); display:flex; justify-content:space-between; }
+.hd nav a, .hd .mn { font-size:calc(14 * var(--u)); font-weight:500; letter-spacing:.02em; text-transform:uppercase; line-height:1.3; }
+.hd nav a.on { text-decoration:underline; text-underline-offset:.3em; text-decoration-thickness:1px; }
+.hd .mn { display:none; }
+
+/* intro */
+.intro { position:relative; padding:calc(166 * var(--u)) calc(40 * var(--u)) 0; min-height:100vh; }
+.ttl { font-family:Archivo,sans-serif; font-stretch:110%; font-variation-settings:"wdth" 110; font-weight:330; font-size:calc(120 * var(--u)); line-height:1; letter-spacing:-.01em; text-transform:uppercase; max-width:calc(1060 * var(--u)); }
+.inf { margin-top:calc(60 * var(--u)); display:grid; grid-template-columns:calc(190 * var(--u)) calc(380 * var(--u)) 1fr; padding-bottom:calc(140 * var(--u)); }
+.inf .c3 { grid-column:3; margin-left:calc(217 * var(--u)); width:calc(498 * var(--u)); }
+.kv + .kv { margin-top:calc(26 * var(--u)); }
+.kv dt { font-size:calc(14 * var(--u)); letter-spacing:.02em; text-transform:uppercase; color:var(--mute); line-height:1.3; margin-bottom:calc(10 * var(--u)); }
+.kv dd { font-size:calc(16 * var(--u)); line-height:1.3; white-space:pre-line; word-break:keep-all; }
+.kv dd.p { font-size:calc(18 * var(--u)); font-weight:500; line-height:1.3; white-space:normal; word-break:keep-all; }
+.cue { position:absolute; left:50%; top:calc(100vh - 96 * var(--u)); width:1px; height:calc(56 * var(--u)); background:rgba(17,17,17,.25); }
+.cue:after { content:""; position:absolute; left:-2px; top:0; width:5px; height:5px; border-radius:50%; background:var(--ink); animation:cue 2.2s cubic-bezier(.6,0,.3,1) infinite; }
+@keyframes cue { 0% { transform:translateY(0); opacity:0 } 15% { opacity:1 } 85% { opacity:1 } 100% { transform:translateY(calc(56 * var(--u) - 5px)); opacity:0 } }
+
+.cue { transition:opacity .4s ease; }
+.cue.gone { opacity:0; }
+@media (prefers-reduced-motion: reduce) { .cue:after { animation:none; top:20px; } .rv { opacity:1 !important; transform:none !important; transition:none !important; } .car .trk { transition:none; } }
+/* flow */
+.flow { padding:0 calc(40 * var(--u)); }
+.blk { position:relative; margin-top:calc(var(--gap, 200) * var(--u)); }
+.blk.full { width:calc(1360 * var(--u)); }
+.blk.center { width:calc(1150 * var(--u)); margin-left:calc(105 * var(--u)); }
+.blk.left { width:calc(660 * var(--u)); }
+.blk.right { width:calc(570 * var(--u)); margin-left:calc(790 * var(--u)); }
+.pair { display:flex; justify-content:space-between; align-items:flex-start; margin-top:calc(var(--gap, 200) * var(--u)); }
+.pair .blk { margin-top:0; margin-left:0; }
+.pair .blk.right { margin-top:calc(var(--off, 280) * var(--u)); }
+.pair.rev { flex-direction:row-reverse; }
+.media { overflow:hidden; }
+.media > * { will-change:transform; }
+.line { padding:calc(250 * var(--u)) 0 calc(50 * var(--u)) calc(115 * var(--u)); }
+.line .bl { font-size:calc(14 * var(--u)); font-weight:500; letter-spacing:.02em; text-transform:uppercase; color:var(--mute); margin-bottom:calc(24 * var(--u)); }
+.line p { width:calc(1065 * var(--u)); font-size:calc(34 * var(--u)); line-height:1.2; font-weight:500; letter-spacing:-.02em; text-indent:calc(150 * var(--u)); word-break:keep-all; }
+
+/* 3D */
+.stage { height:calc(820 * var(--u)); perspective:calc(1900 * var(--u)); position:relative; }
+.box { position:absolute; left:50%; top:50%; transform-style:preserve-3d; }
+.box > div { position:absolute; backface-visibility:hidden; }
+
+/* phone */
+.phone { position:relative; margin:0 auto; }
+.phone .scr { position:absolute; overflow:hidden; background:#ddd; }
+.phone .scr img, .phone .scr video { width:100%; height:100%; object-fit:cover; }
+.phone .frm { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.brands { display:flex; gap:calc(40 * var(--u)); justify-content:center; margin-top:calc(48 * var(--u)); }
+.brands span { font-size:calc(14 * var(--u)); font-weight:500; letter-spacing:.02em; text-transform:uppercase; color:var(--mute); }
+.brands span.on { color:var(--ink); }
+
+/* carousel */
+.car { position:relative; overflow:hidden; }
+.car .trk { display:flex; transition:transform .6s cubic-bezier(.3,.7,.2,1); }
+.car .trk > * { flex:none; width:100%; }
+.arr { position:absolute; top:50%; width:calc(48 * var(--u)); height:calc(48 * var(--u)); margin-top:calc(-24 * var(--u)); border-radius:50%; background:#fff; display:grid; place-items:center; cursor:pointer; border:0; }
+.arr svg { width:38%; height:38%; fill:none; stroke:#3a3a3a; stroke-width:1.3; }
+.arr.prev { left:calc(16 * var(--u)); } .arr.next { right:calc(16 * var(--u)); }
+.arr[hidden] { display:none; }
+
+.x { font-family:"Pretendard Variable",sans-serif; font-weight:300; }
+
+/* flat detail view */
+.dv { position:fixed; inset:0; z-index:60; background:var(--bg); display:none; }
+.dv.open { display:block; }
+.dv .top { position:absolute; left:0; right:0; top:0; padding:calc(36 * var(--u)) calc(40 * var(--u)) 0; display:flex; }
+.dv .top .logo { font-size:calc(18 * var(--u)); font-weight:500; line-height:1; }
+.dv .top button { all:unset; margin-left:auto; cursor:pointer; font-size:calc(14 * var(--u)); font-weight:500; letter-spacing:.02em; text-transform:uppercase; }
+.dv .fig { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); height:calc(680 * var(--u)); }
+.dv .fig img { height:100%; width:auto; }
+.dv .arr { position:absolute; }
+.dv .th { position:absolute; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:6px; }
+.dv .th img { width:44px; height:55px; object-fit:cover; opacity:.35; cursor:pointer; }
+.dv .th img.on { opacity:1; }
+.dv .tx { position:absolute; left:calc(40 * var(--u)); bottom:calc(40 * var(--u)); width:calc(300 * var(--u)); }
+.dv .tx .bl { font-size:calc(14 * var(--u)); font-weight:500; letter-spacing:.02em; text-transform:uppercase; color:var(--mute); margin-bottom:calc(12 * var(--u)); }
+.dv .tx p { font-size:calc(16 * var(--u)); line-height:1.5; word-break:keep-all; }
+.car .trk img, .phone .scr { cursor:zoom-in; }
+.brands span { cursor:pointer; } .brands span.na { cursor:default; }
+@media (max-width:600px) {
+  .dv .top { padding:18px 16px 0; } .dv .top .logo { font-size:16px; } .dv .top button { font-size:14px; }
+  .dv .fig { top:76px; transform:translateX(-50%); width:358px; height:auto; }
+  .dv .fig img { width:100%; height:auto; }
+  .dv .th { top:auto; transform:none; flex-direction:row; left:16px !important; }
+  .dv .tx { left:16px; right:16px; width:auto; bottom:24px; }
+  .dv .tx p { font-size:14px; }
+}
+/* end */
+.end { padding:calc(320 * var(--u)) calc(40 * var(--u)) calc(40 * var(--u)); }
+.end .lb { font-size:calc(18 * var(--u)); font-weight:500; letter-spacing:.02em; text-transform:uppercase; }
+.end .nx { display:block; margin-top:calc(28 * var(--u)); }
+.end .ct { margin-top:calc(200 * var(--u)); display:flex; justify-content:space-between; font-size:calc(16 * var(--u)); padding-top:calc(20 * var(--u)); border-top:1px solid rgba(17,17,17,.2); }
+
+/* reveal */
+.rv { opacity:0; transform:translateY(40px); transition:opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1); }
+.rv.in { opacity:1; transform:none; }
+.static .rv { opacity:1; transform:none; transition:none; }
+
+/* mobile */
+@media (max-width:600px) {
+  :root { --u:1px; }
+  .hd { height:56px; padding:18px 16px 0; }
+  .hd .logo { font-size:16px; }
+  .hd nav { display:none; }
+  .hd .mn { display:block; margin-left:auto; font-size:14px; }
+  .intro { padding:104px 16px 0; min-height:0; }
+  .ttl { font-size:34px; max-width:none; }
+  .inf { margin-top:32px; grid-template-columns:1fr 1fr; gap:22px 16px; padding-bottom:120px; }
+  .inf .c3 { grid-column:1 / -1; margin-left:0; width:auto; }
+  .kv + .kv { margin-top:22px; }
+  .kv dt { font-size:14px; margin-bottom:6px; }
+  .kv dd, .kv dd.p { font-size:14px; line-height:1.4; }
+  .cue { top:auto; bottom:40px; height:44px; }
+  @keyframes cue { 0% { transform:translateY(0); opacity:0 } 15% { opacity:1 } 85% { opacity:1 } 100% { transform:translateY(39px); opacity:0 } }
+  .flow { padding:0 16px; }
+  .blk, .pair { margin-top:calc(var(--gap, 200) * .45px); }
+  .blk, .blk.full, .blk.center, .blk.left, .blk.right, .blk.wv { width:100% !important; margin-left:0 !important; }
+  .pair, .pair.rev { display:block; }
+  .pair .blk.right { margin-top:48px; }
+  .line { padding:140px 0 20px; }
+  .line .bl { font-size:calc(14 * var(--u)); font-weight:500; letter-spacing:.02em; text-transform:uppercase; color:var(--mute); margin-bottom:calc(24 * var(--u)); }
+.line p { width:auto; font-size:22px; line-height:1.25; text-indent:56px; }
+  .stage { height:380px; perspective:1000px; }
+  .brands { gap:12px; margin-top:24px; white-space:nowrap; }
+  .brands span { font-size:14px; letter-spacing:0; }
+  .arr { width:36px; height:36px; margin-top:-18px; }
+  .arr.prev { left:8px; } .arr.next { right:8px; }
+  .end { padding:180px 16px 32px; }
+  .end .lb { font-size:14px; }
+  .end .nx { font-size:28px; }
+  .end .ct { margin-top:120px; font-size:14px; flex-direction:column; gap:6px; }
+}
+</style>
+</head>
+<body>
+<header class="hd"><a class="logo" href="#">Kim Yeri</a><nav><a class="on" href="#">Works</a><a href="#">About</a><a href="#">Contact</a></nav><span class="mn">Menu</span></header>
+<main id="app"></main>
+<div class="dv" id="dv"><div class="top"><span class="logo">Kim Yeri</span><button id="dvx">Close</button></div><div class="fig" id="dvfig"></div><button class="arr prev" id="dvp" aria-label="이전"><svg viewBox="0 0 14 14"><path d="M9 1 3 7l6 6"/></svg></button><button class="arr next" id="dvn" aria-label="다음"><svg viewBox="0 0 14 14"><path d="M5 1l6 6-6 6"/></svg></button><div class="th" id="dvth"></div><div class="tx"><div class="bl" id="dvb"></div><p id="dvt"></p></div></div>
+<script>
+const Q = new URLSearchParams(location.search);
+const STATIC = Q.has("static");
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const MOTION = !STATIC && !RM;
+if (STATIC || RM) document.documentElement.classList.add("static");
+const M = () => matchMedia("(max-width:600px)").matches;
+const IMG = "img/";
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+const vid = (n, r) => `<video src="${IMG}social/${n}.mp4" poster="${IMG}social/${n}-poster.webp" muted loop playsinline preload="none" ${MOTION ? "autoplay" : ""} style="aspect-ratio:${r}"></video>`;
+const car = (list, r, br = "") => `<div class="car" data-brand="${br}" data-list="${list.join(",")}"><div class="trk">${list.map((n) => `<img src="${IMG}social/${n}.webp" alt=""${STATIC ? "" : ' loading="lazy" decoding="async"'} style="aspect-ratio:${r}">`).join("")}</div><button class="arr prev" hidden aria-label="이전"><svg viewBox="0 0 14 14"><path d="M9 1 3 7l6 6"/></svg></button><button class="arr next" aria-label="다음"><svg viewBox="0 0 14 14"><path d="M5 1l6 6-6 6"/></svg></button></div>`;
+const PAGES = {
+  cheremi: {
+    title: "Cheremimaka\nRebranding\nProject",
+    info: [
+      [["CLIENT", "체레미마카(인하우스)"], ["PERIOD", "2022.02 – 2022.07"]],
+      [["ROLE", "브랜드 기획 / 디렉팅 · 포토그래피 총괄 ·\n패키지 디자인"], ["TYPE", "외주사 협업 + 내부 협업"], ["CONTRIBUTION", "70% (기획+외주 디렉팅+실무)"]],
+      [["SUMMARY", "지속가능한 섹슈얼 헬스케어라는 새로운 방향에 맞춰, 전문적이고 고급스러운 감도로 브랜드 아이덴티티부터 패키지·웹까지 다시 설계했습니다.", 1], ["RESULT", "4일이라는 짧은 기간 안에 제품 사진 222장을 신규 촬영해 고퀄리티 브랜드 자산을 확보했습니다.", 1]],
+    ],
+    flow: [
+      { t: "box", gap: 40 },
+      { t: "line", p: "이브 콘돔은 여성이 주도하는 섹슈얼 헬스 브랜드로, 비건 인증과 솔직한 메시지로 새로운 성 문화를 제시해왔습니다. 그러나 후발 브랜드들과의 이미지 중첩 속에서 기존의 밝고 발랄한 감도는 차별성을 잃었고, 도전적이던 이브의 정체성을 유지하면서도 지속가능하고 세련된 방향으로 고급화하여 리브랜딩했습니다." },
+      { t: "img", k: "center", src: "cheremi/hero.webp", r: 1920 / 1080, sp: .06, gap: 120 },
+      { t: "pair", gap: 220, off: 300, a: { k: "left", src: "cheremi/logo-eve.webp", r: 592 / 568, sp: .1 }, b: { k: "right", src: "cheremi/logo-cm.webp", r: 592 / 558, sp: .18 } },
+      { t: "line", p: "지평선의 브랜드 아이덴티티를 바탕으로 고급스러운 무드를 녹여냈습니다. 모듈형 디자인으로 제품의 명칭과 정보를 빠르게 습득할 수 있도록 디자인했습니다. 지기 구조부터 인쇄 감리까지 제품 디자인을 리드하고 설득하며, 제품 생산의 처음과 끝을 경험해 본 뜻깊은 프로젝트였습니다." },
+      { t: "img", k: "full", src: "cheremi/package.webp", r: 1900 / 950, sp: .04, gap: 120 },
+      { t: "img", k: "center", src: "cheremi/application.webp", r: 2300 / 741, sp: .08, gap: 220 },
+      { t: "pair", gap: 240, off: 320, a: { k: "left", src: "cheremi/ph15.webp", r: 1, sp: .08 }, b: { k: "right", src: "cheremi/ph2.webp", r: 960 / 1280, sp: .16 } },
+      { t: "pair", rev: 1, gap: 200, off: 280, a: { k: "left", src: "cheremi/ph10.webp", r: 1320 / 1314, sp: .1 }, b: { k: "right", src: "cheremi/ph14.webp", r: 1, sp: .05 } },
+      { t: "line", p: "콘텐츠의 영역을 명확히 분리하는 레이아웃으로 브랜드 결에 맞는 웹사이트를 구축했습니다. 웹 기획과 디자인은 물론 신규 브랜드 촬영 기획, 웹에 쓰이는 이미지 제작까지 맡아 PC와 모바일 웹, 제품 패키지를 하나의 톤으로 이어냈습니다." },
+      { t: "img", k: "full", src: "cheremi/web.webp", r: 1800 / 1177, sp: .04, gap: 120 },
+    ],
+    next: "KT × JINRO\nCollaboration\nGoods",
+  },
+  social: {
+    title: "Brand Social\nContents",
+    info: [
+      [["CLIENT", "크록스 · 삼성 · 애브비 · 헤일리온"], ["TYPE", "릴스 · 포스트 · 카드뉴스"]],
+      [["BRANDS", "04"], ["CONTRIBUTION", "100%"]],
+      [["SUMMARY", "브랜드마다 다른 톤앤매너를 분석해, 릴스·카드뉴스·포스트까지 채널에 맞는 소셜 콘텐츠를 기획하고 디자인했습니다. AI를 활용해 모션그래픽을 고도화하고 있으며, 기획부터 영상 제작까지 가능합니다.", 1]],
+    ],
+    flow: [
+      { t: "phone", gap: 40, src: "crocs-1", brands: ["Abbvie", "Samsung Members", "Crocs", "Theraflu"], on: 2 },
+      { t: "line", lb: "Abbvie", p: "쥬비덤·스킨바이브 등 애브비 에스테틱스 제품을 카드뉴스, 포스트, 릴스로 풀어, 제품마다 다른 효능 메시지가 채널에 맞게 전달되도록 콘텐츠를 기획하고 디자인했습니다." },
+      { t: "pair", gap: 120, off: 300, a: { k: "left", html: car(["abbvie-c1-1", "abbvie-c1-2", "abbvie-c2-1", "abbvie-c2-2", "abbvie-c3-1", "abbvie-c3-2"], "3/4", "Abbvie"), sp: .05 }, b: { k: "right", w: 428, html: vid("abbvie-reel-3", "9/16"), sp: .14 } },
+      { t: "line", lb: "Crocs", p: "크록스의 밝고 경쾌한 브랜드 톤앤매너에 맞는 SNS 콘텐츠를 제작했습니다. 외주로 진행하던 SNS 콘텐츠를 인하우스 제작으로 전환해 퀄리티를 인정받아 1억 원 규모의 추가 계약을 유도했으며, 글로벌 본사 우수 사례로 선정되었습니다." },
+      { t: "pair", gap: 120, off: 280, a: { k: "left", src: "social/crocs-2.webp", r: 1, sp: .06 }, b: { k: "right", src: "social/crocs-8.webp", r: 4 / 5, sp: .15 } },
+      { t: "html", k: "center", w: 660, html: car(["crocs-3", "crocs-5", "crocs-6"], "4/5", "Crocs"), sp: .05, gap: 220, cen: 1 },
+      { t: "line", lb: "Theraflu", p: "헤일리온 테라플루의 USP인 ‘차처럼 따뜻하게 마시는 감기약’을 하나의 리추얼 모먼트로 표현한 릴스입니다. 짧은 시간 안에도 제품의 특징이 자연스럽게 각인되도록 제작했습니다." },
+      { t: "pair", rev: 1, gap: 120, off: 260, a: { k: "left", html: car(["theraflu-c-1", "theraflu-c-2", "theraflu-c-3", "theraflu-c-4", "theraflu-c-5"], "4/5", "Theraflu"), sp: .06 }, b: { k: "right", w: 428, html: vid("theraflu-reel", "9/16"), sp: .12 } },
+      { t: "line", lb: "Samsung Members", p: "다양한 주제의 정보와 챕터를 담아낼 수 있는 모듈형 디자인과 적절한 비주얼 요소로 정보를 친근하게 전달하고, 자연스러운 구매 연결과 콘텐츠 피드백을 유도했습니다. 기존 운영 중이던 삼성 멤버스 앱 내 콘텐츠 리뉴얼 기획 및 디자인을 제안해 연간 계약을 수주했습니다." },
+    ],
+    next: "Product\nDetail Page",
+  },
+};
+
+const P = PAGES[Q.get("p") || "cheremi"];
+const app = document.getElementById("app");
+const H = [];
+const kv = ([k, v, p]) => `<dl class="kv"><dt>${k}</dt><dd${p ? ' class="p"' : ""}>${esc(v)}</dd></dl>`;
+H.push(`<section class="intro"><h1 class="ttl rv">${esc(P.title).replace(/\n/g, "<br>")}</h1>
+<div class="inf rv">${P.info.map((col, i) => `<div class="c${i + 1}">${col.map(kv).join("")}</div>`).join("")}</div><i class="cue"></i></section>`);
+
+function media(b) {
+  const inner = b.html || `<img src="${IMG + b.src}" alt=""${STATIC ? "" : ' loading="lazy" decoding="async"'} style="aspect-ratio:${b.r}">`;
+  const wst = b.w ? `;width:calc(${b.w} * var(--u))${b.k === "right" && !b.inpair ? `;margin-left:calc(${1360 - b.w} * var(--u))` : ""}${b.cen ? `;margin-left:calc(${(1360 - b.w) / 2} * var(--u))` : ""}` : "";
+  return `<div class="blk ${b.k} media${b.w ? " wv" : ""}${b.cen ? " cen" : ""}" data-sp="${b.sp || 0}" style="--gap:${b.gap ?? 200}${wst}"><div>${inner}</div></div>`;
+}
+const FL = [];
+for (const b of P.flow) {
+  if (b.t === "img" || b.t === "html") FL.push(media(b));
+  else if (b.t === "pair") FL.push(`<div class="pair${b.rev ? " rev" : ""}" style="--gap:${b.gap ?? 200};--off:${b.off ?? 280}">${media({ ...b.a, gap: 0, inpair: 1 })}${media({ ...b.b, gap: 0, inpair: 1 })}</div>`);
+  else if (b.t === "line") FL.push(`<div class="line">${b.lb ? `<div class="bl rv">${b.lb}</div>` : ""}<p class="rv">${esc(b.p)}</p></div>`);
+  else if (b.t === "box") FL.push(`<div class="blk full" style="--gap:${b.gap ?? 200}"><div class="stage" id="stage"></div></div>`);
+  else if (b.t === "phone") FL.push(`<div class="blk full" style="--gap:${b.gap ?? 200};padding:calc(40 * var(--u)) 0 0" id="phoneblk"></div>`);
+}
+H.push(`<section class="flow">${FL.join("")}</section>`);
+H.push(`<section class="end"><div class="lb rv">More projects</div><a class="nx ttl rv" href="#">${esc(P.next).replace(/\n/g, "<br>").replace(/×/g, '<span class="x">×</span>')}</a>
+<div class="ct"><span>kimyeri.design@gmail.com</span><span>Kim Yeri — Digital &amp; Brand Designer</span></div></section>`);
+app.innerHTML = H.join("");
+
+/* 3D package box */
+function buildBox() {
+  const st = document.getElementById("stage"); if (!st) return;
+  const W = st.clientWidth, s = M() ? 0.4 : W / 1360;
+  const w = 780 * s, h = w * 452 / 858, d = 156 * s;
+  const front = `background:url(${IMG}cheremi/pk-front.png) center/100% 100%`;
+  const faces = { front, back: front, top: "background:linear-gradient(180deg,#f7f8f9,#eceef0)", bottom: "background:#cfd1d4", right: "background:linear-gradient(90deg,#d9dbde,#cbcdd0)", left: "background:linear-gradient(90deg,#e4e6e9,#d8dadd)" };
+  const f = (n, FW, FH, tr) => `<div style="width:${FW}px;height:${FH}px;margin:${-FH / 2}px 0 0 ${-FW / 2}px;transform:${tr};${faces[n]}"></div>`;
+  st.innerHTML = `<div class="box" id="box">${f("front", w, h, `translateZ(${d / 2}px)`)}${f("back", w, h, `rotateY(180deg) translateZ(${d / 2}px)`)}${f("right", d, h, `rotateY(90deg) translateZ(${w / 2}px)`)}${f("left", d, h, `rotateY(-90deg) translateZ(${w / 2}px)`)}${f("top", w, d, `rotateX(90deg) translateZ(${h / 2}px)`)}${f("bottom", w, d, `rotateX(-90deg) translateZ(${h / 2}px)`)}</div>`;
+}
+buildBox();
+function buildPhone() {
+  const pb = document.getElementById("phoneblk"); if (!pb) return;
+  const b = P.flow.find((x) => x.t === "phone");
+  const pw = M() ? 230 : 400 * (pb.clientWidth / 1360), ph = pw * 1200 / 615;
+  pb.innerHTML = `<div class="phone" style="width:${pw}px;height:${ph}px"><div class="scr" style="left:3.209%;top:1.293%;width:93.582%;height:96.445%;border-radius:${pw * .93582 * .135}px"><img src="${IMG}social/${b.src}.webp" alt=""></div><img class="frm" src="${IMG}social/phone-frame.png" alt=""></div><div class="brands">${b.brands.map((n, i) => `<span class="${i === b.on ? "on" : ""}">${n}</span>`).join("")}</div>`;
+}
+buildPhone();
+document.querySelectorAll(".car").forEach((c) => {
+  const trk = c.querySelector(".trk"), n = trk.children.length, pv = c.querySelector(".prev"), nx = c.querySelector(".next"); let i = 0;
+  const go = (k) => { i = Math.max(0, Math.min(n - 1, k)); trk.style.transform = `translateX(${-i * 100}%)`; pv.hidden = i === 0; nx.hidden = i === n - 1; };
+  pv.onclick = () => go(i - 1); nx.onclick = () => go(i + 1); go(0);
+});
+const box = () => document.getElementById("box");
+function setBox(p) { const b = box(); if (b) b.style.transform = `rotateX(${-16 + p * 6}deg) rotateY(${-34 + p * 40}deg)`; }
+setBox(0);
+
+/* parallax + reveal */
+const meds = [...document.querySelectorAll(".media")];
+function tick() {
+  if (!MOTION) return;
+  const vh = innerHeight;
+  for (const m of meds) {
+    const sp = +m.dataset.sp; if (!sp) continue;
+    const r = m.getBoundingClientRect();
+    const c = (r.top + r.height / 2 - vh / 2);
+    m.firstElementChild.style.transform = `translateY(${-c * sp}px)`;
+  }
+  const st = document.getElementById("stage");
+  if (st) { const r = st.getBoundingClientRect(); const p = Math.min(1, Math.max(0, 1 - (r.top + r.height) / (vh + r.height))); setBox(p); }
+  requestAnimationFrame(tick);
+}
+if (MOTION) {
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .15 });
+  document.querySelectorAll(".rv").forEach((x) => io.observe(x));
+  requestAnimationFrame(tick);
+}
+const cueEl = document.querySelector(".cue");
+addEventListener("scroll", () => { if (cueEl && scrollY > 8) cueEl.classList.add("gone"); }, { passive: true });
+addEventListener("resize", () => { buildBox(); setBox(0); buildPhone(); });
+if (window.afterBuild) window.afterBuild();
+
+/* brand tabs + flat detail view */
+const BR = {
+  Abbvie: { scr: { v: "abbvie-reel-3" }, set: ["abbvie-c1-1", "abbvie-c1-2", "abbvie-c2-1", "abbvie-c2-2", "abbvie-c3-1", "abbvie-c3-2"] },
+  "Samsung Members": null,
+  Crocs: { scr: { i: "crocs-1" }, set: ["crocs-3", "crocs-5", "crocs-6", "crocs-2", "crocs-8"] },
+  Theraflu: { scr: { v: "theraflu-reel" }, set: ["theraflu-c-1", "theraflu-c-2", "theraflu-c-3", "theraflu-c-4", "theraflu-c-5"] },
+};
+const TXT = {}; (P.flow || []).forEach((b) => { if (b.t === "line" && b.lb) TXT[b.lb] = b.p; });
+let curBrand = null;
+function setScreen(name) {
+  const scr = document.querySelector(".phone .scr"); const d = BR[name]; if (!scr || !d) return;
+  curBrand = name;
+  scr.innerHTML = d.scr.v ? `<video src="${IMG}social/${d.scr.v}.mp4" poster="${IMG}social/${d.scr.v}-poster.webp" muted loop playsinline ${MOTION ? "autoplay" : ""}></video>` : `<img src="${IMG}social/${d.scr.i}.webp" alt="">`;
+  document.querySelectorAll(".brands span").forEach((x) => x.classList.toggle("on", x.textContent === name));
+}
+document.querySelectorAll(".brands span").forEach((x) => { if (!BR[x.textContent]) x.classList.add("na"); x.onclick = () => setScreen(x.textContent); });
+if (document.querySelector(".brands span.on")) curBrand = document.querySelector(".brands span.on").textContent;
+const dv = document.getElementById("dv"); let dvSet = [], dvI = 0;
+function dvShow(k) {
+  dvI = Math.max(0, Math.min(dvSet.length - 1, k));
+  let im = document.getElementById("dvimg");
+  if (!im) { im = document.createElement("img"); im.id = "dvimg"; im.alt = ""; document.getElementById("dvfig").appendChild(im); }
+  im.src = `${IMG}social/${dvSet[dvI]}.webp`;
+  document.getElementById("dvp").hidden = dvI === 0; document.getElementById("dvn").hidden = dvI === dvSet.length - 1;
+  document.querySelectorAll("#dvth img").forEach((t, j) => t.classList.toggle("on", j === dvI));
+}
+function dvLayout() {
+  const f = dv.querySelector(".fig").getBoundingClientRect(), p = document.getElementById("dvp"), n = document.getElementById("dvn"), th = document.getElementById("dvth");
+  if (M()) { p.style.left = "24px"; n.style.left = (16 + 358 - 8 - 36) + "px"; p.style.top = n.style.top = (f.top + f.height / 2) + "px"; th.style.top = (f.bottom + 12) + "px"; return; }
+  const a = p.offsetWidth, gap = 24;
+  p.style.left = (f.left - gap - a) + "px"; n.style.left = (f.right + gap) + "px"; p.style.top = n.style.top = "50%";
+  th.style.left = (f.left - gap - a - 24 - 44) + "px";
+}
+let dvFrom = null;
+const BASE = () => (M() ? "translateX(-50%)" : "translate(-50%,-50%)");
+function flip(from, reverse, done) {
+  const fig = document.getElementById("dvfig");
+  if (!from || !MOTION || !fig.getAnimations) { done && done(); return; }
+  const s = from.getBoundingClientRect(), f = fig.getBoundingClientRect();
+  if (!s.width || !f.width) { done && done(); return; }
+  const dx = s.left + s.width / 2 - (f.left + f.width / 2), dy = s.top + s.height / 2 - (f.top + f.height / 2), k = s.width / f.width;
+  const a = { transform: `translate(${dx}px,${dy}px) ${BASE()} scale(${k})` }, b = { transform: BASE() };
+  const opt = { duration: 350, easing: "cubic-bezier(.3,.7,.2,1)" };
+  fig.animate(reverse ? [b, a] : [a, b], opt);
+  const bg = dv.animate(reverse ? [{ backgroundColor: "rgba(236,236,236,1)" }, { backgroundColor: "rgba(236,236,236,0)" }] : [{ backgroundColor: "rgba(236,236,236,0)" }, { backgroundColor: "rgba(236,236,236,1)" }], opt);
+  dv.querySelectorAll(".top,.tx,.th,.arr").forEach((x) => x.animate(reverse ? [{ opacity: 1 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 1 }], opt));
+  bg.onfinish = () => done && done();
+}
+function openDetail(brand, k, from) {
+  const d = BR[brand]; if (!d) return;
+  dvSet = d.set; document.getElementById("dvb").textContent = brand; document.getElementById("dvt").textContent = TXT[brand] || "";
+  document.getElementById("dvth").innerHTML = dvSet.map((n, j) => `<img src="${IMG}social/${n}.webp" data-j="${j}" alt="">`).join("");
+  document.querySelectorAll("#dvth img").forEach((t) => (t.onclick = () => dvShow(+t.dataset.j)));
+  dv.classList.add("open"); document.body.style.overflow = "hidden"; dvShow(k || 0);
+  dvFrom = from || null;
+  const img = document.getElementById("dvimg");
+  const go = () => { dvLayout(); flip(dvFrom, false); };
+  img.complete && img.naturalWidth ? go() : img.addEventListener("load", go, { once: true });
+}
+let closing = false;
+function closeDetail() {
+  if (!dv.classList.contains("open") || closing) return; closing = true;
+  flip(dvFrom, true, () => { dv.classList.remove("open"); document.body.style.overflow = ""; closing = false; });
+}
+document.getElementById("dvx").onclick = closeDetail;
+document.getElementById("dvp").onclick = () => dvShow(dvI - 1);
+document.getElementById("dvn").onclick = () => dvShow(dvI + 1);
+addEventListener("keydown", (e) => { if (!dv.classList.contains("open")) return; if (e.key === "Escape") closeDetail(); if (e.key === "ArrowLeft") dvShow(dvI - 1); if (e.key === "ArrowRight") dvShow(dvI + 1); });
+document.querySelectorAll(".car").forEach((c) => c.querySelectorAll(".trk img").forEach((im, j) => (im.onclick = () => { const b = c.dataset.brand; const list = c.dataset.list.split(","); openDetail(b, BR[b] ? BR[b].set.indexOf(list[j]) : 0, im); })));
+const scrEl = document.querySelector(".phone .scr"); if (scrEl) scrEl.onclick = () => openDetail(curBrand, 0, scrEl);
+window.openDetail = openDetail; window.setScreen = setScreen;
+
+document.fonts.ready.then(() => Promise.all([...document.images].filter((i) => i.loading !== "lazy").map((i) => i.decode().catch(() => {})))).then(() => { document.body.dataset.ready = "1"; });
+</script>
+</body>
+</html>
