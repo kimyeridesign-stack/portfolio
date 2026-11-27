@@ -80,48 +80,78 @@
       '<div class="info">' + p.info.map(function (r) {
         return '<div class="info__row"><span class="label">' + esc(r[0]) + '</span><span class="info__value">' + esc(r[1]) + "</span></div>";
       }).join("") + "</div>" +
-      '<div class="pj__block"><span class="label">Summary</span><p class="pj__text">' + esc(p.summary) + "</p></div>" +
-      (p.result ? '<div class="pj__block"><span class="label">Result</span><p class="pj__text">' + esc(p.result) + "</p></div>" : "") +
+      '<div class="pj__block"><span class="label">Summary</span><p class="pj__text">' + esc(p.summary).replace(/\n/g, " <br class=\"d-br\">") + "</p></div>" +
+      (p.result ? '<div class="pj__block"><span class="label">Result</span><p class="pj__text">' + esc(p.result).replace(/\n/g, " <br class=\"d-br\">") + "</p></div>" : "") +
       nextBtn;
     pj.querySelector(".split__side").innerHTML = side;
     var mNext = document.querySelector(".mobile-next");
     if (mNext) mNext.innerHTML = nextBtn;
 
     var main = pj.querySelector(".split__main");
-    if (p.feature) {
-      // 2단계에서 3D/스크롤 인터랙션이 들어갈 자리
-      var st = el("div", "stage3d reveal");
-      st.dataset.feature = p.feature;
-      main.appendChild(st);
-    }
-    if (!p.sections.length) {
-      // 작업 페이지 단계에서 피그마 내용으로 채울 자리
-      var sec = el("section", "pj-sec reveal");
-      if (p.feature) sec.style.marginTop = "calc(120 * var(--u))";
-      sec.innerHTML = '<div class="grid grid--3"><div class="ph" style="aspect-ratio:3/4"></div><div class="ph" style="aspect-ratio:3/4"></div><div class="ph" style="aspect-ratio:3/4"></div></div>';
-      main.appendChild(sec);
-    }
-    p.sections.forEach(function (s) {
+    var IMG = "assets/img/";
+    // 피그마 줄바꿈은 데스크톱에서만 살리고, 모바일에선 자연스럽게 흐르게
+    var br = function (t) { return esc(t).replace(/\n/g, ' <br class="d-br">'); };
+    var pic = function (src, w, h, alt, eager) {
+      return '<img src="' + IMG + src + '.webp"' + (w ? ' width="' + w + '" height="' + h + '"' : "") +
+        ' alt="' + esc(alt || "") + '"' + (eager ? "" : ' loading="lazy"') + ' decoding="async">';
+    };
+    var alt = p.kor;
+    var firstImg = true;
+    var item = function (it) {
+      var ratio = it.r.replace("/", " / ");
+      if (it.slides) {
+        var h = '<div class="carousel" data-carousel style="aspect-ratio:' + ratio + '"><div class="carousel__track">';
+        it.slides.forEach(function (src) { h += '<div class="carousel__slide">' + pic(src, null, null, alt) + "</div>"; });
+        return h + "</div></div>";
+      }
+      if (it.scroll) {
+        return '<div class="scrollbox" tabindex="0" style="aspect-ratio:' + ratio + '">' + pic(it.scroll, null, null, alt) + "</div>";
+      }
+      return '<div class="media' + (it.video ? " media--video" : "") + '" style="aspect-ratio:' + ratio + '">' + pic(it.src, null, null, alt) + "</div>";
+    };
+    var block = function (bl) {
+      if (bl.img) {
+        var e = firstImg; firstImg = false;
+        return '<figure class="full reveal">' + pic(bl.img, bl.w, bl.h, alt, e) + "</figure>";
+      }
+      if (bl.sub) return '<h3 class="section-h section-h--sub reveal">' + esc(bl.sub) + "</h3>";
+      if (bl.display) return '<p class="display reveal">' + esc(bl.display) + "</p>";
+      if (bl.items) {
+        var cols = typeof bl.cols === "number" ? "repeat(" + bl.cols + ", 1fr)" : bl.cols;
+        return '<div class="grid grid--media grid--n' + bl.items.length + ' reveal" style="--cols:' + cols + '">' + bl.items.map(item).join("") + "</div>";
+      }
+      if (bl.cols) {
+        return '<div class="tcols tcols--' + bl.cols.length + (bl.label ? " tcols--label" : "") + ' reveal">' + bl.cols.map(function (c) {
+          return '<div class="tcol"><p class="tcol__h">' + esc(c[0]) + '</p><p class="tcol__b">' + br(c[1]) + "</p></div>";
+        }).join("") + "</div>";
+      }
+      if (bl.brand) {
+        var d = bl.brand;
+        var cell = function (label, body) { return '<div class="brand__cell"><span class="label">' + label + "</span>" + body + "</div>"; };
+        return '<div class="brand reveal">' +
+          '<div class="brand__logos">' + pic(d.logos.img, d.logos.w, d.logos.h, alt) + "</div>" +
+          '<div class="brand__grid">' +
+          cell("OVERVIEW", '<p class="brand__p">' + br(d.overview) + "</p>") +
+          cell("PROBLEM", '<p class="brand__p">' + br(d.problem) + "</p>") +
+          cell("LOGO CONCEPT", '<div class="brand__logo">' + d.logo.map(function (t) { return '<p class="brand__c">' + br(t) + "</p>"; }).join("") + "</div>") +
+          cell("CORE VALUE", '<div class="brand__core">' + d.core.map(function (c) {
+            return '<div class="brand__v"><span class="brand__ring">' + esc(c[0]) + '</span><p class="brand__c">' + esc(c[1]) + "</p></div>";
+          }).join("") + "</div>") +
+          '<div class="brand__cell brand__cell--wide"><span class="label">BRAND STORY</span><div class="brand__two">' +
+          d.story.map(function (t) { return '<p class="brand__p">' + br(t) + "</p>"; }).join("") + "</div></div>" +
+          "</div></div>";
+      }
+      return "";
+    };
+
+    // p.feature(3D 패키지, 박스 언박싱)는 작업 페이지 단계에서 붙인다
+    p.sections.forEach(function (s, k) {
       var sec = el("section", "pj-sec");
-      var html = '<h2 class="section-h reveal">' + esc(s.h) + "</h2>" +
-        '<p class="pj-sec__desc reveal">' + esc(s.desc).replace(/\n/g, "<br>") + "</p>" +
-        '<div class="pj-sec__media">';
-      s.rows.forEach(function (row) {
-        var cols = typeof row.cols === "number" ? "repeat(" + row.cols + ", 1fr)" : row.cols;
-        html += '<div class="grid reveal" style="grid-template-columns:' + cols + '">';
-        row.items.forEach(function (it) {
-          var ratio = it.r.replace("/", " / ");
-          if (it.carousel) {
-            html += '<div class="carousel" data-carousel><div class="carousel__track">';
-            for (var i = 0; i < it.carousel; i++) html += '<div class="carousel__slide"><div class="ph" style="aspect-ratio:' + ratio + ';border-radius:0"></div></div>';
-            html += "</div></div>";
-          } else {
-            html += '<div class="ph' + (it.video ? " ph--video" : "") + '" style="aspect-ratio:' + ratio + '"></div>';
-          }
-        });
-        html += "</div>";
-      });
-      html += "</div>";
+      var html = "";
+      if (s.h) html += '<h2 class="section-h reveal">' + esc(s.h) + "</h2>";
+      if (s.desc) html += '<p class="pj-sec__desc reveal">' + br(s.desc) + "</p>";
+      var blocks = (s.rows || []).map(function (r) { return { cols: r.cols, items: r.items }; }).concat(s.blocks || []);
+      html += '<div class="pj-sec__media' + (s.h ? "" : " pj-sec__media--flush") + '">' + blocks.map(block).join("") + "</div>";
       sec.innerHTML = html;
       main.appendChild(sec);
     });
